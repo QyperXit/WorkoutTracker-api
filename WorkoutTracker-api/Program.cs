@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WorkoutTracker_api.DBContext;
+using WorkoutTracker_api.DBContext.Interfaces;
+using WorkoutTracker_api.DBContext.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

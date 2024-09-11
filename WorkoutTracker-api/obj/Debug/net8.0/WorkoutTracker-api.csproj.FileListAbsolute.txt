@@ -136,3 +136,4 @@
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/ref/WorkoutTracker-api.dll
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/MySqlConnector.dll
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/Pomelo.EntityFrameworkCore.MySql.dll
+/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutTracker-api.sourcelink.json

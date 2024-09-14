@@ -82,7 +82,7 @@ public class UserController : ControllerBase
     }
 
     
-    [HttpPut("{userId}")]
+    [HttpPut("{id}")]
     public IActionResult UpdateUser(int id, UserUpdateDto userUpdateDto)
     {
         var user = _userRepository.GetUserById(id);

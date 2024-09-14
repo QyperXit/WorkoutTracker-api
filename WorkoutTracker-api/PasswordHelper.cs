@@ -1,6 +1,4 @@
-namespace WorkoutTracker_api.DBContext;
-using System.Security.Cryptography;
-using System.Text;
+using BCrypt.Net;
 
 public class PasswordHelper
 {
@@ -9,11 +7,13 @@ public class PasswordHelper
         if (string.IsNullOrEmpty(password))
             return null;
 
-        using (var sha256 = SHA256.Create())
-        {
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hashBytes = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hashBytes);
-        }
+        // Generate a salted hash of the password
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    public static bool VerifyPassword(string password, string hashedPassword)
+    {
+        // Verify the password against the stored hash
+        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
     }
 }

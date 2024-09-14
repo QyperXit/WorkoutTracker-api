@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "tZg3jc+aeT8=",
+  "dgSpecHash": "7LTp4C4z42k=",
   "success": true,
   "projectFilePath": "/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/WorkoutTracker-api.csproj",
   "expectedPackageFiles": [
     "/home/qyper/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/home/qyper/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",
+    "/home/qyper/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/home/qyper/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/qyper/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "/home/qyper/.nuget/packages/microsoft.codeanalysis.analyzers/3.3.3/microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",

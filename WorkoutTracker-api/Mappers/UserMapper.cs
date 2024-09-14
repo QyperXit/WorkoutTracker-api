@@ -33,15 +33,12 @@ public class UserMapper
         user.Email = userUpdateDto.Email;
         if (!string.IsNullOrEmpty(userUpdateDto.Password))
         {
-            user.Password = HashPassword(userUpdateDto.Password);
+            user.Password = PasswordHelper.HashPassword(userUpdateDto.Password);
         }
     }
+
     
-    private static string HashPassword(string password)
-    {
-        // Your hashing logic here
-        return password; // Placeholder: replace with actual hashing
-    }
+    
     
     
 }

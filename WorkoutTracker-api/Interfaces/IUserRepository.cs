@@ -7,11 +7,11 @@ public interface IUserRepository
     IEnumerable<User> GetUsers();
     User GetUserById(int id);
     User GetUserByEmail(string email);
-    // void CreateUser(User user);
-    // void UpdateUser(User user);
-    // void DeleteUser(int id);
+    bool CreateUser(User user);
+    bool UpdateUser(User user);
+    bool DeleteUser(int id);
     bool UserExists(int id);
     bool UserExists(string email);
-    // bool SaveChanges();
+    bool SaveChanges();
 
 }

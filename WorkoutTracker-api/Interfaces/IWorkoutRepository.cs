@@ -1,0 +1,15 @@
+using WorkoutTracker_api.DBContext.Dto;
+using WorkoutTracker_api.Models;
+
+namespace WorkoutTracker_api.DBContext.Interfaces;
+
+public interface IWorkoutRepository
+{
+    IEnumerable<WorkoutDto> GetWorkouts();
+    Workout GetWorkout(int id);
+    bool CreateWorkout(Workout workout);
+    bool UpdateWorkout(Workout workout);
+    bool DeleteWorkout(Workout workout);
+    bool WorkoutExists(int id);
+    bool SaveChanges();
+}

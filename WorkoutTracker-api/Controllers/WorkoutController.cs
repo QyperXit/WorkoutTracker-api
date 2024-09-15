@@ -65,5 +65,26 @@ public class WorkoutController : ControllerBase
         //if return 201 if successful with created workout
         return CreatedAtAction(nameof(GetWorkoutById), new { id = createdWorkout.Id }, WorkoutMapper.ToDto(createdWorkout));
     }
+    
+    [HttpPut("{id}")]
+    public IActionResult UpdateWorkout(int id, [FromBody] WorkoutUpdateDto workoutUpdateDto)
+    {
+        if (workoutUpdateDto == null || workoutUpdateDto.Id != id)
+        {
+            return BadRequest("Invalid input or ID mismatch.");
+        }
+
+        if (!_workoutRepository.WorkoutExists(id))
+        {
+            return NotFound($"Workout with ID {id} not found.");
+        }
+
+        if (_workoutRepository.UpdateWorkout(workoutUpdateDto))
+        {
+            return NoContent(); // 204 No Content is typically used for successful updates
+        }
+
+        return StatusCode(500, "An error occurred while updating the workout.");
+    }
 
 }

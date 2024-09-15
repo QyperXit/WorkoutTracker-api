@@ -45,9 +45,22 @@ public class WorkoutRepository : IWorkoutRepository
         return workout;
     }
 
-    public bool UpdateWorkout(Workout workout)
+    public bool UpdateWorkout(WorkoutUpdateDto workoutUpdateDto)
     {
-        throw new NotImplementedException();
+        var existingWorkout = _context.Workouts
+            .Include(w => w.WorkoutExercises)
+            .FirstOrDefault(w => w.Id == workoutUpdateDto.Id);
+
+        if (existingWorkout == null)
+        {
+            return false;  // Workout not found
+        }
+
+        // Use the mapper to update the existing workout entity with new data from the DTO
+        WorkoutMapper.UpdateModelFromDto(workoutUpdateDto, existingWorkout);
+
+        // Save changes and return true if any changes were successfully saved
+        return SaveChanges();
     }
 
     public bool DeleteWorkout(Workout workout)
@@ -57,7 +70,7 @@ public class WorkoutRepository : IWorkoutRepository
 
     public bool WorkoutExists(int id)
     {
-        throw new NotImplementedException();
+        return _context.Workouts.Any(w => w.Id == id);
     }
 
     public bool SaveChanges()

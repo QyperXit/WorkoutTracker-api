@@ -29,4 +29,23 @@ public class WorkoutMapper
             }).ToList()
         };
     }
+    
+    public static Workout ToEntity(WorkoutCreateDto workoutCreateDto)
+    {
+        return new Workout
+        {
+            UserId = workoutCreateDto.UserId,
+            Date = workoutCreateDto.Date,
+            Name = workoutCreateDto.Name,
+            Notes = workoutCreateDto.Notes,
+            WorkoutExercises = workoutCreateDto.WorkoutExercises.Select(we => new WorkoutExercise
+            {
+                ExerciseId = we.ExerciseId,
+                Sets = we.Sets,
+                Reps = we.Reps,
+                Weight = we.Weight,
+                RestTimeSeconds = we.RestTimeSeconds
+            }).ToList()
+        };
+    }
 }

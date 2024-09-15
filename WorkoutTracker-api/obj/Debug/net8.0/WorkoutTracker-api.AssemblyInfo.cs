@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorkoutTracker-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a549a5d4fefc1f4c1d8d327dfe1cf9770ba73e4a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5dd70697c12d0b1476c910db1cefd834c43b3fb4")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorkoutTracker-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorkoutTracker-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

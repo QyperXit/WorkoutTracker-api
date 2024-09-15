@@ -32,12 +32,17 @@ public class WorkoutRepository : IWorkoutRepository
 
     public Workout GetWorkout(int id)
     {
-        throw new NotImplementedException();
+        return _context.Workouts
+            .Include(w => w.WorkoutExercises)
+            .ThenInclude(we => we.Exercise)
+            .FirstOrDefault(w => w.Id == id);
     }
 
-    public bool CreateWorkout(Workout workout)
+    public Workout CreateWorkout(Workout workout)
     {
-        throw new NotImplementedException();
+        _context.Workouts.Add(workout);
+        SaveChanges();
+        return workout;
     }
 
     public bool UpdateWorkout(Workout workout)
@@ -57,6 +62,6 @@ public class WorkoutRepository : IWorkoutRepository
 
     public bool SaveChanges()
     {
-        throw new NotImplementedException();
+        return _context.SaveChanges() > 0;
     }
 }

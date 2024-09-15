@@ -63,10 +63,29 @@ public class WorkoutRepository : IWorkoutRepository
         return SaveChanges();
     }
 
-    public bool DeleteWorkout(Workout workout)
+    public bool DeleteWorkout(int id)
     {
-        throw new NotImplementedException();
+        var workout = _context.Workouts
+            .Include(w => w.WorkoutExercises)
+            .FirstOrDefault(w => w.Id == id);
+
+        if (workout == null)
+        {
+            return false; // Workout not found
+        }
+
+        _context.Workouts.Remove(workout);
+
+        // Optionally remove associated exercises if not using cascade delete
+        _context.WorkoutExercises.RemoveRange(workout.WorkoutExercises);
+
+        return _context.SaveChanges() > 0;
     }
+
+    // public bool DeleteWorkout(Workout workout)
+    // {
+    //     throw new NotImplementedException();
+    // }
 
     public bool WorkoutExists(int id)
     {

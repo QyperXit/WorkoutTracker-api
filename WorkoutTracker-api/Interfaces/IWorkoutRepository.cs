@@ -11,7 +11,7 @@ public interface IWorkoutRepository
     // bool UpdateWorkout(Workout workout);
     bool UpdateWorkout(WorkoutUpdateDto workoutUpdateDto);  // Update the parameter type to WorkoutUpdateDto
 
-    bool DeleteWorkout(Workout workout);
+    bool DeleteWorkout(int id);
     bool WorkoutExists(int id);
     bool SaveChanges();
 }

@@ -86,5 +86,24 @@ public class WorkoutController : ControllerBase
 
         return StatusCode(500, "An error occurred while updating the workout.");
     }
+    
+    [HttpDelete("{id}")]
+    public IActionResult DeleteWorkout(int id)
+    {
+        if (!_workoutRepository.WorkoutExists(id))
+        {
+            return NotFound($"Workout with ID {id} not found.");
+        }
+
+        var success = _workoutRepository.DeleteWorkout(id);
+
+        if (success)
+        {
+            return NoContent(); // 204 No Content is typically used for successful deletions
+        }
+
+        return StatusCode(500, "An error occurred while deleting the workout.");
+    }
+
 
 }

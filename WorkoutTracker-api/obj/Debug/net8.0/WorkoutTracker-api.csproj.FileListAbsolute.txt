@@ -138,4 +138,5 @@
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutTracker-api.sourcelink.json
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/BCrypt.Net-Next.dll
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
-/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutT.E9370CC8.Up2Date
+/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/System.Text.Json.dll
+/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutTracker-api.csproj.CopyComplete

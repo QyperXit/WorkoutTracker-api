@@ -8,8 +8,8 @@ public interface IWorkoutRepository
     IEnumerable<WorkoutDto> GetWorkouts();
     Workout GetWorkout(int id);
     Workout CreateWorkout(Workout workout);
-    // bool UpdateWorkout(Workout workout);
-    bool UpdateWorkout(WorkoutUpdateDto workoutUpdateDto);  // Update the parameter type to WorkoutUpdateDto
+    
+    bool UpdateWorkout(WorkoutUpdateDto workoutUpdateDto);  
 
     bool DeleteWorkout(int id);
     bool WorkoutExists(int id);

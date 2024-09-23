@@ -128,7 +128,6 @@
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.WorkoutTracker-api.props
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/staticwebassets.pack.json
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/scopedcss/bundle/WorkoutTracker-api.styles.css
-/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutT.E9370CC8.Up2Date
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutTracker-api.dll
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/refint/WorkoutTracker-api.dll
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutTracker-api.pdb
@@ -138,3 +137,5 @@
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/Pomelo.EntityFrameworkCore.MySql.dll
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutTracker-api.sourcelink.json
 /home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/BCrypt.Net-Next.dll
+/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/qyper/RiderProjects/WorkoutTracker-api/WorkoutTracker-api/obj/Debug/net8.0/WorkoutT.E9370CC8.Up2Date

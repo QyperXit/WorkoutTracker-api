@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker_api.DBContext.Dto;
 using WorkoutTracker_api.DBContext.Interfaces;
 using WorkoutTracker_api.DBContext.Mapper;
 using WorkoutTracker_api.Models;
+
 
 namespace WorkoutTracker_api.DBContext.Controllers;
 
@@ -11,12 +13,15 @@ namespace WorkoutTracker_api.DBContext.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
+    private readonly TokenService _tokenService;
 
-    public UserController(IUserRepository userRepository)
+    public UserController(IUserRepository userRepository,TokenService tokenService)
     {
         _userRepository = userRepository;
+        _tokenService = tokenService;
     }
-
+    
+    // [Authorize]
     [HttpGet]
     // [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
@@ -119,7 +124,24 @@ public class UserController : ControllerBase
 
         return NoContent(); // Successfully deleted, return 204 No Content
     }
-        
+    
+    
+    [HttpPost("login")]
+    public IActionResult Login(UserLoginDto loginDto)
+    {
+        var user = _userRepository.GetUserByEmail(loginDto.Email);
+    
+        if (user == null || !PasswordHelper.VerifyPassword(loginDto.Password, user.Password))
+        {
+            return Unauthorized(new { message = "Invalid email or password." });
+        }
+
+        var token = _tokenService.GenerateToken(user.Id.ToString(), user.Name);  // Assuming _tokenService is injected
+
+        return Ok(new { Token = token });
+    }
+
+
 
     
     

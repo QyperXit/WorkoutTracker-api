@@ -1,5 +1,4 @@
-// using WorkoutTracker_api.DBContext.Dto;
-// using WorkoutTracker_api.DBContext.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
 using WorkoutTracker_api.Models;
 using WorkoutTracker_api.Interfaces;
@@ -31,9 +30,9 @@ namespace WorkoutTracker_api.Repository
         .Select(ee => new ExerciseEquipmentDto
         {
             ExerciseId = ee.ExerciseId,
-            ExerciseName = ee.Exercise.Name, // Assuming Exercise has a Name property
+            ExerciseName = ee.Exercise.Name, 
             EquipmentId = ee.EquipmentId,
-            EquipmentName = ee.Equipment.Name // Assuming Equipment has a Name property
+            EquipmentName = ee.Equipment.Name 
         })
         .ToList();
 

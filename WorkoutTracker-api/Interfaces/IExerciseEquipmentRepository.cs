@@ -8,7 +8,7 @@ namespace WorkoutTracker_api.Interfaces
     public interface IExerciseEquipmentRepository
     {
         IEnumerable<ExerciseEquipmentDto> GetAll();
-        // ExerciseEquipment GetByIds(int exerciseId, int equipmentId);
+        ExerciseEquipmentDto GetByIds(int exerciseId, int equipmentId);
         // bool Add(ExerciseEquipmentDto exerciseEquipmentDto);
         // bool Delete(int exerciseId, int equipmentId);
         // bool Exists(int exerciseId, int equipmentId);

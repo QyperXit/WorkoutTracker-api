@@ -34,6 +34,17 @@ namespace WorkoutTracker_api.Controllers
 
             return Ok(exerciseEquipment);
         }
+
+        // get
+
+        [HttpGet("{exerciseId}/{equipmentId}")]
+        public IActionResult GetExerciseEquipment(int exerciseId, int equipmentId)
+        {
+            var exerciseEquipment = _exerciseEquipmentRepository.GetByIds(exerciseId, equipmentId);
+            if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+            return Ok(exerciseEquipment);
+        }
       
     }
 }

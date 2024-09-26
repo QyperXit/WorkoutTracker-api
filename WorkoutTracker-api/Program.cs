@@ -17,6 +17,7 @@ builder.Services.AddTransient<Seed>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
 builder.Services.AddScoped<IExerciseEquipmentRepository, ExerciseEquipmentRepository>();
+builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

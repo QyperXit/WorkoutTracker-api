@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using WorkoutTracker_api.DBContext;
 using WorkoutTracker_api.DBContext.Interfaces;
 using WorkoutTracker_api.DBContext.Repository;
+using WorkoutTracker_api.Interfaces;
+using WorkoutTracker_api.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IWorkoutRepository, WorkoutRepository>();
+builder.Services.AddScoped<IExerciseEquipmentRepository, ExerciseEquipmentRepository>();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

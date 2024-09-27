@@ -25,7 +25,7 @@ public class WorkoutRepository : IWorkoutRepository
         //
         return _context.Workouts
             .Include(w => w.WorkoutExercises)
-            .ThenInclude(we => we.Exercise) // Load Exercise for WorkoutExercises
+            .ThenInclude(we => we.Exercise) 
             .Select(w => WorkoutMapper.ToDto(w))
             .ToList();
     }

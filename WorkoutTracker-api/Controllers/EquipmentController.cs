@@ -74,9 +74,23 @@ namespace WorkoutTracker_api.Controllers
                 return BadRequest("Error creating equipment.");
             }
 
-            return CreatedAtAction(nameof(GetEquipmentById), new { id = createdEquipment.Id }, createdEquipment);
+            return CreatedAtAction(nameof(GetEquipmentById), new { id = createdEquipment.Id }, createdEquipment);        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateEquipment(int id, UpdateEquipmentDto updateEquipmentDto)
+        {
+            if (!await _equipmentRepository.CheckEquipmentExistsAsync(id))
+            {
+                return NotFound();
+            }
+
+            var success = await _equipmentRepository.UpdateEquipmentAsync(id, updateEquipmentDto);
+            if (!success)
+            {
+                return BadRequest("Failed to update equipment.");
+            }
+
+            return NoContent(); // Return 204 No Content on successful update
         }
-
-
     }
 }

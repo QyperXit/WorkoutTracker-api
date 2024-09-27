@@ -89,8 +89,21 @@ namespace WorkoutTracker_api.Repository
 
 
           public async Task<bool> CheckEquipmentExistsByNameAsync(string name)
-    {
-        return await _context.Equipments.AnyAsync(e => e.Name == name);
-    }
+        {
+            return await _context.Equipments.AnyAsync(e => e.Name == name);
+        }
+
+        public async Task<bool> UpdateEquipmentAsync(int id, UpdateEquipmentDto updateEquipmentDto){
+            var equipment = await _context.Equipments.FindAsync(id);
+            if (equipment == null)
+                return false; 
+
+                equipment.Name = updateEquipmentDto.Name;
+                equipment.Description = updateEquipmentDto.Description;
+
+                _context.Equipments.Update(equipment);
+                
+                return await SaveChangesAsync();
+        }
     }
 }

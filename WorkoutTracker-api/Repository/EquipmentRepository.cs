@@ -18,6 +18,26 @@ namespace WorkoutTracker_api.Repository
             
         }
 
+         public async Task<bool> CheckEquipmentExistsAsync(int id)
+        {
+            return await _context.Equipments.AnyAsync(e => e.Id == id);
+        }
+
+           public async Task<bool> DeleteEquipmentAsync(int id)
+        {
+            var equipment = await _context.Equipments.FindAsync(id);
+            if (equipment == null)
+                return false; // Return false if not found
+
+            _context.Equipments.Remove(equipment); // Remove the equipment
+            return await SaveChangesAsync(); // Save changes and return success
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0; // Return true if save was successful
+        }
+
         public async Task<IEnumerable<EquipmentDto>> GetAllEquipmentsAsync()
         {
             var equipments = await _context.Equipments.ToListAsync();

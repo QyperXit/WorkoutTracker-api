@@ -10,8 +10,9 @@ namespace WorkoutTracker_api.Interfaces
     {
         Task<IEnumerable<EquipmentDto>> GetAllEquipmentsAsync();
         Task<EquipmentDto> GetEquipmentByIdAsync(int id);
-        // Task<EquipmentDto> CreateEquipmentAsync(CreateEquipmentDto createEquipmentDto);
-        // Task<bool> CheckEquipmentExistsByNameAsync(string name);
+        Task<EquipmentDto> CreateEquipmentAsync(CreateEquipmentDto createEquipmentDto); 
+
+        Task<bool> CheckEquipmentExistsByNameAsync(string name);
         Task<bool> CheckEquipmentExistsAsync(int id);
         Task<bool> DeleteEquipmentAsync(int id);
         Task<bool> SaveChangesAsync();

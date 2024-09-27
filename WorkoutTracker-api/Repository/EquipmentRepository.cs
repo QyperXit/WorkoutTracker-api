@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using WorkoutTracker_api.DBContext;
 using WorkoutTracker_api.Dto;
 using WorkoutTracker_api.Interfaces;
+using WorkoutTracker_api.Models;
+
 
 namespace WorkoutTracker_api.Repository
 {
@@ -62,5 +64,33 @@ namespace WorkoutTracker_api.Repository
                     Description = equipment.Description
                 };
         }
+
+        public async Task<EquipmentDto> CreateEquipmentAsync(CreateEquipmentDto createEquipmentDto)
+        {
+            var equipment = new Equipment
+            {
+                Name = createEquipmentDto.Name,
+                Description = createEquipmentDto.Description,
+                // Map other properties if needed
+            };
+
+            await _context.Equipments.AddAsync(equipment);
+            await SaveChangesAsync();
+
+            // Return the created equipment as EquipmentDto
+            return new EquipmentDto
+            {
+                Id = equipment.Id,
+                Name = equipment.Name,
+                Description = equipment.Description,
+                // Map other properties if needed
+            };
+        }
+
+
+          public async Task<bool> CheckEquipmentExistsByNameAsync(string name)
+    {
+        return await _context.Equipments.AnyAsync(e => e.Name == name);
+    }
     }
 }

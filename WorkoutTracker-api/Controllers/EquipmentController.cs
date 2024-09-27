@@ -54,5 +54,29 @@ namespace WorkoutTracker_api.Controllers
             return NoContent(); // Return 204 No Content on successful deletion
         }
 
+        [HttpPost]
+        public async Task<ActionResult<EquipmentDto>> CreateEquipment(CreateEquipmentDto createEquipmentDto)
+        {
+            if (createEquipmentDto == null) 
+                return BadRequest("Equipment data is required.");
+
+            // Check if equipment already exists by Name (optional)
+            if (await _equipmentRepository.CheckEquipmentExistsByNameAsync(createEquipmentDto.Name)) 
+            {
+                return BadRequest("Equipment with this name already exists.");
+            }
+
+            var createdEquipment = await _equipmentRepository.CreateEquipmentAsync(createEquipmentDto);
+
+            // Check if createdEquipment is valid
+            if (createdEquipment == null || createdEquipment.Id <= 0)
+            {
+                return BadRequest("Error creating equipment.");
+            }
+
+            return CreatedAtAction(nameof(GetEquipmentById), new { id = createdEquipment.Id }, createdEquipment);
+        }
+
+
     }
 }

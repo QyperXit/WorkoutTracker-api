@@ -17,5 +17,6 @@ namespace WorkoutTracker_api.Interfaces
         Task<bool> DeleteEquipmentAsync(int id);
         Task<bool> SaveChangesAsync();
         
+        
     }
 }

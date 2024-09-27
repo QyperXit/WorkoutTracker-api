@@ -8,10 +8,10 @@ namespace WorkoutTracker_api.Dto
 {
     public class CreateEquipmentDto
     {
-        [Required]
+        // [Required]
         public string Name { get; set; }
 
-        [Required]
+        // [Required]
         public string Description { get; set; }
     }
 }

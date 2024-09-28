@@ -9,9 +9,11 @@ namespace WorkoutTracker_api.Interfaces
     {
         IEnumerable<ExerciseEquipmentDto> GetAll();
         ExerciseEquipmentDto GetByIds(int exerciseId, int equipmentId);
-        // bool Add(ExerciseEquipmentDto exerciseEquipmentDto);
-        // bool Delete(int exerciseId, int equipmentId);
-        // bool Exists(int exerciseId, int equipmentId);
+        Task<ExerciseEquipmentDto> CreateExerciseEquipmentAsync(CreateExerciseEquipmentDto dto);
+        Task<bool> DeleteExerciseEquipmentAsync(int exerciseId, int equipmentId);
+
+
+    
         // bool SaveChanges();
     }
 }

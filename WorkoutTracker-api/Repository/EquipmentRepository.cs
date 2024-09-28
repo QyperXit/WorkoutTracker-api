@@ -52,17 +52,19 @@ namespace WorkoutTracker_api.Repository
 
         public async Task<EquipmentDto> GetEquipmentByIdAsync(int id)
         {
-            var equipment = await _context.Equipments
-                .FirstOrDefaultAsync(e => e.Id == id);
+          
+            var equipment = await _context.Equipments.FindAsync(id);
 
-            return equipment == null
-                ? null
-                : new EquipmentDto
-                {
-                    Id = equipment.Id,
-                    Name = equipment.Name,
-                    Description = equipment.Description
-                };
+            if (equipment == null)
+                return null;
+
+            return new EquipmentDto
+            {
+                Id = equipment.Id,
+                Name = equipment.Name,
+                Description = equipment.Description
+            };
+
         }
 
         public async Task<EquipmentDto> CreateEquipmentAsync(CreateEquipmentDto createEquipmentDto)

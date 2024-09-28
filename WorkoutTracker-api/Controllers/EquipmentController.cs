@@ -10,11 +10,11 @@ namespace WorkoutTracker_api.Controllers
     [ApiController]
     public class EquipmentController : ControllerBase
     {
-        private readonly IEquipmentRepository _equipmentRepository; // Use an underscore for instance variables
+        private readonly IEquipmentRepository _equipmentRepository; 
 
         public EquipmentController(IEquipmentRepository equipmentRepository)
         {
-            _equipmentRepository = equipmentRepository; // Correctly assign the injected repository
+            _equipmentRepository = equipmentRepository; 
         }
 
         [HttpGet]

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WorkoutTracker_api.Dto;
 using WorkoutTracker_api.Interfaces;
 using WorkoutTracker_api.Models;
 
@@ -24,13 +25,12 @@ namespace WorkoutTracker_api.Controllers
         // GET: api/ExerciseEquipment
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ExerciseEquipment>))]
-        public IActionResult GetAllExerciseEquipment()
+           public async Task<IActionResult> GetAllExerciseEquipment()
         {
-            var exerciseEquipment = _exerciseEquipmentRepository.GetAll();
+            var exerciseEquipment = await _exerciseEquipmentRepository.GetAllAsync();
 
             if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-            
+                return BadRequest(ModelState);
 
             return Ok(exerciseEquipment);
         }
@@ -38,13 +38,52 @@ namespace WorkoutTracker_api.Controllers
         // get
 
         [HttpGet("{exerciseId}/{equipmentId}")]
-        public IActionResult GetExerciseEquipment(int exerciseId, int equipmentId)
+        public async Task<IActionResult> GetExerciseEquipment(int exerciseId, int equipmentId)
+            {
+                var exerciseEquipment = await _exerciseEquipmentRepository.GetByIdsAsync(exerciseId, equipmentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (exerciseEquipment == null)
+                    return NotFound();
+
+                return Ok(exerciseEquipment);
+            }
+
+            [HttpPost]
+        public async Task<ActionResult<ExerciseEquipmentDto>> CreateExerciseEquipment([FromBody] CreateExerciseEquipmentDto dto)
         {
-            var exerciseEquipment = _exerciseEquipmentRepository.GetByIds(exerciseId, equipmentId);
-            if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-            return Ok(exerciseEquipment);
+            if (dto == null)
+            {
+                return BadRequest("Invalid exercise-equipment data.");
+            }
+
+            var createdExerciseEquipment = await _exerciseEquipmentRepository.CreateExerciseEquipmentAsync(dto);
+
+            if (createdExerciseEquipment == null)
+            {
+                return Conflict("The relationship between exercise and equipment already exists.");
+            }
+
+            return CreatedAtAction(nameof(GetExerciseEquipment), new { exerciseId = createdExerciseEquipment.ExerciseId, equipmentId = createdExerciseEquipment.EquipmentId }, createdExerciseEquipment);
         }
+
+        [HttpDelete("{exerciseId}/{equipmentId}")]
+        public async Task<IActionResult> DeleteExerciseEquipment(int exerciseId, int equipmentId)
+        {
+            var deleted = await _exerciseEquipmentRepository.DeleteExerciseEquipmentAsync(exerciseId, equipmentId);
+
+            if (!deleted)
+            {
+                return NotFound("The exercise-equipment link was not found.");
+            }
+
+            return NoContent(); // 204 No Content response on successful deletion
+        }
+
+
+
       
     }
 }

@@ -35,18 +35,19 @@ namespace WorkoutTracker_api.Repository
 
         public async Task<ExerciseDto> GetExerciseByIdAsync(int id)
         {
-             var exercise = await _context.Exercises
-                .FirstOrDefaultAsync(e => e.Id == id);
+            
+            var exercise = await _context.Exercises.FindAsync(id); // await the FindAsync call
 
-            return exercise == null
-                ? null
-                : new ExerciseDto
-                {
-                    Id = exercise.Id,
-                    Name = exercise.Name,
-                    Description = exercise.Description,
-                    PrimaryMuscleGroup = exercise.PrimaryMuscleGroup
-                };
+
+            if (exercise == null) return null;
+
+            return new ExerciseDto
+            {
+                Id = exercise.Id,
+                Name = exercise.Name,
+                Description = exercise.Description,
+                PrimaryMuscleGroup = exercise.PrimaryMuscleGroup
+            };
         }
 
                 public async Task<ExerciseDto> CreateExerciseAsync(CreateExerciseDto createExerciseDto)
@@ -80,7 +81,7 @@ namespace WorkoutTracker_api.Repository
 
           public async Task<bool> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync() > 0; // Return true if save was successful
+            return await _context.SaveChangesAsync() > 0; 
         }
 
             public async Task<bool> CheckExerciseExistsAsync(int id)

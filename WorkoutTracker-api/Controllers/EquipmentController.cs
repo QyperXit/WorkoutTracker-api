@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker_api.Dto;
 using WorkoutTracker_api.Interfaces;
-using System.Collections.Generic; // Required for IEnumerable<T>
+using System.Collections.Generic; 
 using System.Threading.Tasks;
 
 namespace WorkoutTracker_api.Controllers
@@ -20,7 +20,7 @@ namespace WorkoutTracker_api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EquipmentDto>>> GetAllEquipments()
         {
-            var equipments = await _equipmentRepository.GetAllEquipmentsAsync(); // Use _equipmentRepository
+            var equipments = await _equipmentRepository.GetAllEquipmentsAsync(); 
             return Ok(equipments);
         }
 
@@ -41,17 +41,17 @@ namespace WorkoutTracker_api.Controllers
             // Check if the equipment exists
             if (!await _equipmentRepository.CheckEquipmentExistsAsync(id))
             {
-                return NotFound(); // Return 404 if not found
+                return NotFound(); 
             }
 
             // Proceed to delete
             var deleted = await _equipmentRepository.DeleteEquipmentAsync(id);
             if (!deleted)
             {
-                return BadRequest("Error deleting equipment."); // Handle delete error
+                return BadRequest("Error deleting equipment."); 
             }
 
-            return NoContent(); // Return 204 No Content on successful deletion
+            return NoContent(); 
         }
 
         [HttpPost]
@@ -60,7 +60,6 @@ namespace WorkoutTracker_api.Controllers
             if (createEquipmentDto == null) 
                 return BadRequest("Equipment data is required.");
 
-            // Check if equipment already exists by Name (optional)
             if (await _equipmentRepository.CheckEquipmentExistsByNameAsync(createEquipmentDto.Name)) 
             {
                 return BadRequest("Equipment with this name already exists.");
@@ -90,7 +89,7 @@ namespace WorkoutTracker_api.Controllers
                 return BadRequest("Failed to update equipment.");
             }
 
-            return NoContent(); // Return 204 No Content on successful update
+            return NoContent(); 
         }
     }
 }

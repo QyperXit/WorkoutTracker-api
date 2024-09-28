@@ -7,11 +7,11 @@ namespace WorkoutTracker_api.Interfaces
 {
     public interface IExerciseEquipmentRepository
     {
-        IEnumerable<ExerciseEquipmentDto> GetAll();
-        ExerciseEquipmentDto GetByIds(int exerciseId, int equipmentId);
-        // bool Add(ExerciseEquipmentDto exerciseEquipmentDto);
-        // bool Delete(int exerciseId, int equipmentId);
-        // bool Exists(int exerciseId, int equipmentId);
-        // bool SaveChanges();
+       Task<IEnumerable<ExerciseEquipmentDto>> GetAllAsync(); 
+        Task<ExerciseEquipmentDto> GetByIdsAsync(int exerciseId, int equipmentId);  
+        Task<ExerciseEquipmentDto> CreateExerciseEquipmentAsync(CreateExerciseEquipmentDto dto);
+        Task<bool> DeleteExerciseEquipmentAsync(int exerciseId, int equipmentId);
+        Task<bool> SaveChangesAsync();
+
     }
 }

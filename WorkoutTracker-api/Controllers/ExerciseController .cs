@@ -23,7 +23,7 @@ namespace WorkoutTracker_api.Controllers
         [HttpGet]
            public async Task<ActionResult<IEnumerable<ExerciseDto>>> GetAllExercisesAsync()
         {
-            var exercises = await _exerciseRepository.GetAllExercisesAsync(); // Use _equipmentRepository
+            var exercises = await _exerciseRepository.GetAllExercisesAsync(); 
             return Ok(exercises);
         }
 
@@ -44,7 +44,6 @@ namespace WorkoutTracker_api.Controllers
             if (createExerciseDto == null) 
                 return BadRequest("Exercise data is required.");
 
-            // Check if exercise already exists by Name (optional)
             if (await _exerciseRepository.CheckExerciseExistsByNameAsync(createExerciseDto.Name)) 
             {
                 return BadRequest("Exercise with this name already exists.");
@@ -92,7 +91,7 @@ namespace WorkoutTracker_api.Controllers
                     return BadRequest("Failed to update exercise.");
                 }
 
-                return NoContent(); // Return 204 No Content on successful update
+                return NoContent(); 
             }
     }
 }

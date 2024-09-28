@@ -43,7 +43,7 @@ public class WorkoutController : ControllerBase
 
         // Map the workout to WorkoutDto and return it
         var workoutDto = WorkoutMapper.ToDto(workout);
-        return Ok(workoutDto); // Return 200 with the workout data
+        return Ok(workoutDto); 
     }
 
     [HttpPost]
@@ -81,7 +81,7 @@ public class WorkoutController : ControllerBase
 
         if (_workoutRepository.UpdateWorkout(workoutUpdateDto))
         {
-            return NoContent(); // 204 No Content is typically used for successful updates
+            return NoContent(); 
         }
 
         return StatusCode(500, "An error occurred while updating the workout.");
@@ -99,7 +99,7 @@ public class WorkoutController : ControllerBase
 
         if (success)
         {
-            return NoContent(); // 204 No Content is typically used for successful deletions
+            return NoContent();
         }
 
         return StatusCode(500, "An error occurred while deleting the workout.");

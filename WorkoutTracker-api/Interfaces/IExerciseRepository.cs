@@ -13,6 +13,8 @@ namespace WorkoutTracker_api.Interfaces
         Task<ExerciseDto> CreateExerciseAsync(CreateExerciseDto createExerciseDto);
         Task<bool> CheckExerciseExistsByNameAsync(string name);
         Task<bool> CheckExerciseExistsAsync(int id);
+        Task<bool> DeleteExerciseAsync(int id);
+
         Task<bool> SaveChangesAsync();
 
        

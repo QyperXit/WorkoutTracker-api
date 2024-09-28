@@ -88,6 +88,14 @@ namespace WorkoutTracker_api.Repository
             return await _context.Exercises.AnyAsync(e => e.Id == id);
         }
 
-      
+        public async Task<bool> DeleteExerciseAsync(int id)
+        {
+            var exercise = await _context.Exercises.FindAsync(id);
+            if (exercise == null)
+                return false; // Return false if not found
+
+            _context.Exercises.Remove(exercise); // Remove the exercise
+            return await SaveChangesAsync(); 
+        }
     }
 }

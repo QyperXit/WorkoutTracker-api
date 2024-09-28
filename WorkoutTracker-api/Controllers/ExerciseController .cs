@@ -59,5 +59,23 @@ namespace WorkoutTracker_api.Controllers
             }
 
             return CreatedAtAction(nameof(GetExerciseById), new { id = createdExercise.Id }, createdExercise);        }
+
+            [HttpDelete("{id}")]
+            public async Task<ActionResult> DeleteExercise(int id)
+            {
+                if (!await _exerciseRepository.CheckExerciseExistsAsync(id))
+                {
+                    return NotFound(); 
+                }
+
+                // Proceed to delete
+                var deleted = await _exerciseRepository.DeleteExerciseAsync(id);
+                if (!deleted)
+                {
+                    return BadRequest("Error deleting exercise."); 
+                }
+
+                return NoContent(); 
+            }
     }
 }

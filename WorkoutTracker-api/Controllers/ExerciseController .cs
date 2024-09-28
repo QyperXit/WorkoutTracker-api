@@ -58,7 +58,7 @@ namespace WorkoutTracker_api.Controllers
                 return BadRequest("Error creating exercise.");
             }
 
-            return CreatedAtAction(nameof(GetExerciseById), new { id = createdExercise.Id }, createdExercise);        }
+            return CreatedAtAction(nameof(GetExerciseById), new { id = createdExercise.Id }, createdExercise);  }
 
             [HttpDelete("{id}")]
             public async Task<ActionResult> DeleteExercise(int id)
@@ -76,6 +76,23 @@ namespace WorkoutTracker_api.Controllers
                 }
 
                 return NoContent(); 
+            }
+
+            [HttpPut("{id}")]
+            public async Task<ActionResult> UpdateExercise(int id, UpdateExerciseDto updateExerciseDto)
+            {
+                if (!await _exerciseRepository.CheckExerciseExistsAsync(id))
+                {
+                    return NotFound();
+                }
+
+                var success = await _exerciseRepository.UpdateExerciseAsync(id, updateExerciseDto);
+                if (!success)
+                {
+                    return BadRequest("Failed to update exercise.");
+                }
+
+                return NoContent(); // Return 204 No Content on successful update
             }
     }
 }

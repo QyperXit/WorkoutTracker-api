@@ -15,6 +15,8 @@ namespace WorkoutTracker_api.Interfaces
         Task<bool> CheckExerciseExistsAsync(int id);
         Task<bool> DeleteExerciseAsync(int id);
 
+        Task<bool> UpdateExerciseAsync(int id, UpdateExerciseDto updateExerciseDto);
+
         Task<bool> SaveChangesAsync();
 
        

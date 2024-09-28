@@ -25,13 +25,12 @@ namespace WorkoutTracker_api.Controllers
         // GET: api/ExerciseEquipment
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ExerciseEquipment>))]
-        public IActionResult GetAllExerciseEquipment()
+           public async Task<IActionResult> GetAllExerciseEquipment()
         {
-            var exerciseEquipment = _exerciseEquipmentRepository.GetAll();
+            var exerciseEquipment = await _exerciseEquipmentRepository.GetAllAsync();
 
             if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-            
+                return BadRequest(ModelState);
 
             return Ok(exerciseEquipment);
         }
@@ -39,13 +38,18 @@ namespace WorkoutTracker_api.Controllers
         // get
 
         [HttpGet("{exerciseId}/{equipmentId}")]
-        public IActionResult GetExerciseEquipment(int exerciseId, int equipmentId)
-        {
-            var exerciseEquipment = _exerciseEquipmentRepository.GetByIds(exerciseId, equipmentId);
-            if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-            return Ok(exerciseEquipment);
-        }
+        public async Task<IActionResult> GetExerciseEquipment(int exerciseId, int equipmentId)
+            {
+                var exerciseEquipment = await _exerciseEquipmentRepository.GetByIdsAsync(exerciseId, equipmentId);
+
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                if (exerciseEquipment == null)
+                    return NotFound();
+
+                return Ok(exerciseEquipment);
+            }
 
             [HttpPost]
         public async Task<ActionResult<ExerciseEquipmentDto>> CreateExerciseEquipment([FromBody] CreateExerciseEquipmentDto dto)

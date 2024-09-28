@@ -23,39 +23,39 @@ namespace WorkoutTracker_api.Repository
         
         }
 
-        public IEnumerable<ExerciseEquipmentDto> GetAll()
+         public async Task<IEnumerable<ExerciseEquipmentDto>> GetAllAsync()
         {
    
-        return _context.ExerciseEquipments
-        .Include(ee => ee.Exercise)
-        .Include(ee => ee.Equipment)
-        .Select(ee => ExerciseEquipmentMapper.ToDto(
-            ee,
-            ee.Exercise.Name, // Eager loaded Exercise name
-            ee.Equipment.Name // Eager loaded Equipment name
-        ))
-        .ToList();
+            var exerciseEquipments = await _context.ExerciseEquipments
+                    .Include(ee => ee.Exercise)
+                    .Include(ee => ee.Equipment)
+                    .ToListAsync();
+
+                return exerciseEquipments.Select(ee => ExerciseEquipmentMapper.ToDto(
+                    ee,
+                    ee.Exercise.Name,
+                    ee.Equipment.Name
+                ));
 
         }
 
-            public ExerciseEquipmentDto GetByIds(int exerciseId, int equipmentId)
+        public async Task<ExerciseEquipmentDto> GetByIdsAsync(int exerciseId, int equipmentId)
         {
-        var exerciseEquipment = _context.ExerciseEquipments
-                .Include(ee => ee.Exercise)   // Eager load the related Exercise entity
-                .Include(ee => ee.Equipment)   // Eager load the related Equipment entity
-                .FirstOrDefault(ee => ee.ExerciseId == exerciseId && ee.EquipmentId == equipmentId);
+            var exerciseEquipment = await _context.ExerciseEquipments
+                        .Include(ee => ee.Exercise)
+                        .Include(ee => ee.Equipment)
+                        .FirstOrDefaultAsync(ee => ee.ExerciseId == exerciseId && ee.EquipmentId == equipmentId);
 
-            if (exerciseEquipment == null)
-            {
-                return null;  // Or handle this as needed (e.g., throw an exception or return a default value)
-            }
+                    if (exerciseEquipment == null)
+                    {
+                        return null;
+                    }
 
-            // Map to ExerciseEquipmentDto using the ToDto method
-            return ExerciseEquipmentMapper.ToDto(
-                exerciseEquipment,
-                exerciseEquipment.Exercise.Name, // Eager loaded Exercise name
-                exerciseEquipment.Equipment.Name  // Eager loaded Equipment name
-            );
+                    return ExerciseEquipmentMapper.ToDto(
+                        exerciseEquipment,
+                        exerciseEquipment.Exercise.Name,
+                        exerciseEquipment.Equipment.Name
+                    );
         }
 
                 public async Task<ExerciseEquipmentDto> CreateExerciseEquipmentAsync(CreateExerciseEquipmentDto dto)
@@ -76,7 +76,8 @@ namespace WorkoutTracker_api.Repository
             };
 
             await _context.ExerciseEquipments.AddAsync(exerciseEquipment);
-            await _context.SaveChangesAsync();
+            await SaveChangesAsync();
+            
 
             // Optionally load the exercise and equipment names for the response
             var created = await _context.ExerciseEquipments
@@ -95,11 +96,13 @@ namespace WorkoutTracker_api.Repository
             if (exerciseEquipment == null) return false;
 
             _context.ExerciseEquipments.Remove(exerciseEquipment);
-            await _context.SaveChangesAsync();
+            await SaveChangesAsync();
             return true;
         }
 
-
-
-}
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0; 
+        }
+    }
 }

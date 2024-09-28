@@ -81,7 +81,7 @@ namespace WorkoutTracker_api.Repository
 
           public async Task<bool> SaveChangesAsync()
         {
-            return await _context.SaveChangesAsync() > 0; // Return true if save was successful
+            return await _context.SaveChangesAsync() > 0; 
         }
 
             public async Task<bool> CheckExerciseExistsAsync(int id)

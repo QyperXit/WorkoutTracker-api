@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker_api.DBContext.Dto;
 using WorkoutTracker_api.DBContext.Interfaces;
@@ -17,6 +18,7 @@ public class WorkoutController : ControllerBase
         _workoutRepository = workoutRepository;
     }
 
+    [Authorize]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WorkoutDto>))]
     public IActionResult GetWorkouts()

@@ -22,7 +22,7 @@ public class UserController : ControllerBase
         _tokenService = tokenService;
     }
     
-    [Authorize]
+    // [Authorize]
     [HttpGet]
     // [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
@@ -36,7 +36,7 @@ public class UserController : ControllerBase
         return Ok(users);
     }
     
-    [Authorize]
+    // [Authorize]
     // Get user by ID
     [HttpGet("{id}")]
     public ActionResult<UserDto> GetUserById(int id)
@@ -108,7 +108,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
     
-    [Authorize]
+    // [Authorize]
     [HttpDelete("{userId}")]
     public IActionResult DeleteUser(int userId)
     

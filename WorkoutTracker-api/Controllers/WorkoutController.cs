@@ -18,7 +18,7 @@ public class WorkoutController : ControllerBase
         _workoutRepository = workoutRepository;
     }
 
-    [Authorize]
+    // [Authorize]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WorkoutDto>))]
     public IActionResult GetWorkouts()

@@ -92,6 +92,19 @@ public class WorkoutExerciseController : ControllerBase
         return NoContent();
     }
     
+    [HttpDelete("{workoutId}/{exerciseId}")]
+    public async Task<IActionResult> DeleteWorkoutExercise(int workoutId, int exerciseId)
+    {
+        var result = await _workoutExerciseRepository.DeleteWorkoutExerciseAsync(workoutId, exerciseId);
+
+        if (!result)
+        {
+            return NotFound($"WorkoutExercise with WorkoutId {workoutId} and ExerciseId {exerciseId} not found.");
+        }
+
+        return NoContent();
+    }
+    
 
     
 }

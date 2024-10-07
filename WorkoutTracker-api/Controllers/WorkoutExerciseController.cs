@@ -45,5 +45,53 @@ public class WorkoutExerciseController : ControllerBase
         return Ok(workoutExercises);
     }
     
+
+    [HttpPost]
+    public async Task<ActionResult<WorkoutExerciseDto>> AddWorkoutExerciseAsync(WorkoutExerciseDto workoutExerciseDto)
+    {
+        await _workoutExerciseRepository.AddWorkoutExerciseAsync(workoutExerciseDto);
+        return Ok(workoutExerciseDto);
+    }
+ 
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateWorkoutExercise(int id, [FromBody] WorkoutExerciseDto workoutExerciseDto)
+    {
+        // Validate the incoming DTO
+        if (id != workoutExerciseDto.Id) // You might want to validate against composite keys
+        {
+            return BadRequest("ID mismatch.");
+        }
+
+        // Call the repository method to update
+        var result = await _workoutExerciseRepository.UpdateWorkoutExerciseAsync(workoutExerciseDto);
+    
+        if (!result)
+        {
+            return NotFound(); 
+        }
+
+        return NoContent(); 
+    }
+
+    [HttpPatch("{workoutId}/{exerciseId}")]
+    public async Task<IActionResult> PatchWorkoutExercise(int workoutId, int exerciseId, [FromBody] WorkoutExercisePatchDto patchDto)
+    {
+        if (patchDto == null)
+        {
+            return BadRequest("Patch data is required.");
+        }
+
+        var result = await _workoutExerciseRepository.PatchWorkoutExerciseAsync(workoutId, exerciseId, patchDto);
+
+        if (!result)
+        {
+            return NotFound($"WorkoutExercise with WorkoutId {workoutId} and ExerciseId {exerciseId} not found.");
+        }
+
+        return NoContent();
+    }
+    
+
     
 }

@@ -16,10 +16,7 @@ public class WorkoutExerciseRepository : IWorkoutExerciseRepository
         this._context = _context;
     }
 
-    // public async Task<WorkoutExercise> GetWorkoutExerciseAsync(int workoutId, int exerciseId)
-    // {
-    //     return await _context.WorkoutExercises.FirstOrDefaultAsync(we => we.Id == workoutId && we.ExerciseId == exerciseId);
-    // }
+   
 
     public async Task<IEnumerable<WorkoutExerciseDto>> GetAllWorkoutExercisesByWorkoutIdAsync(int workoutId)
     {
@@ -57,5 +54,74 @@ public class WorkoutExerciseRepository : IWorkoutExerciseRepository
                 RestTimeSeconds = we.RestTimeSeconds
             })
             .FirstOrDefaultAsync();
+    }
+
+    public async Task AddWorkoutExerciseAsync(WorkoutExerciseDto workoutExerciseDto)
+    {
+        var workoutExercise = new WorkoutExercise
+        {
+            WorkoutId = workoutExerciseDto.WorkoutId,
+            ExerciseId = workoutExerciseDto.ExerciseId,
+            Sets = workoutExerciseDto.Sets,
+            Reps = workoutExerciseDto.Reps,
+            Weight = workoutExerciseDto.Weight,
+            RestTimeSeconds = workoutExerciseDto.RestTimeSeconds
+        };
+
+        await _context.WorkoutExercises.AddAsync(workoutExercise);
+        await SaveChangesAsync();
+    }
+
+    public async Task<bool> UpdateWorkoutExerciseAsync(WorkoutExerciseDto workoutExerciseDto)
+    {
+        // Find the existing WorkoutExercise using both keys
+        var existingWorkoutExercise = await _context.WorkoutExercises
+            .FirstOrDefaultAsync(we => we.WorkoutId == workoutExerciseDto.WorkoutId && 
+                                       we.ExerciseId == workoutExerciseDto.ExerciseId);
+    
+        if (existingWorkoutExercise == null)
+        {
+            return false; 
+        }
+
+        // Update the properties
+        existingWorkoutExercise.Sets = workoutExerciseDto.Sets;
+        existingWorkoutExercise.Reps = workoutExerciseDto.Reps;
+        existingWorkoutExercise.Weight = workoutExerciseDto.Weight;
+        existingWorkoutExercise.RestTimeSeconds = workoutExerciseDto.RestTimeSeconds;
+
+        await SaveChangesAsync();
+        return true;
+    }
+    
+    public async Task<bool> PatchWorkoutExerciseAsync(int workoutId, int exerciseId, WorkoutExercisePatchDto patchDto)
+    {
+        var existingWorkoutExercise = await _context.WorkoutExercises
+            .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
+
+        if (existingWorkoutExercise == null)
+        {
+            return false;
+        }
+
+        // Update only the properties that are not null in the patchDto
+        if (patchDto.Sets.HasValue)
+            existingWorkoutExercise.Sets = patchDto.Sets.Value;
+        if (patchDto.Reps.HasValue)
+            existingWorkoutExercise.Reps = patchDto.Reps.Value;
+        if (patchDto.Weight.HasValue)
+            existingWorkoutExercise.Weight = patchDto.Weight.Value;
+        if (patchDto.RestTimeSeconds.HasValue)
+            existingWorkoutExercise.RestTimeSeconds = patchDto.RestTimeSeconds.Value;
+
+        await SaveChangesAsync();
+        return true;
+    }
+    
+
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0; 
     }
 }

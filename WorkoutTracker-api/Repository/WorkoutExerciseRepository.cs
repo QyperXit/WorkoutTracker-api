@@ -118,6 +118,21 @@ public class WorkoutExerciseRepository : IWorkoutExerciseRepository
         return true;
     }
     
+    public async Task<bool> DeleteWorkoutExerciseAsync(int workoutId, int exerciseId)
+    {
+        var workoutExercise = await _context.WorkoutExercises
+            .FirstOrDefaultAsync(we => we.WorkoutId == workoutId && we.ExerciseId == exerciseId);
+
+        if (workoutExercise == null)
+        {
+            return false;
+        }
+
+        _context.WorkoutExercises.Remove(workoutExercise);
+        await SaveChangesAsync();
+        return true;
+    }
+    
 
 
     public async Task<bool> SaveChangesAsync()

@@ -11,6 +11,6 @@ public interface IWorkoutExerciseRepository
     Task<bool> UpdateWorkoutExerciseAsync(WorkoutExerciseDto workoutExerciseDto);
     Task<bool> PatchWorkoutExerciseAsync(int workoutId, int exerciseId, WorkoutExercisePatchDto patchDto);
     
-    // Task<bool> DeleteWorkoutExerciseAsync(int workoutId, int exerciseId);
+    Task<bool> DeleteWorkoutExerciseAsync(int workoutId, int exerciseId);
     Task<bool> SaveChangesAsync();
 }

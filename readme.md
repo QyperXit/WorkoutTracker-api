@@ -10,22 +10,16 @@ This API is designed to manage users and will eventually include features for tr
 - **Authentication**: User login with JWT (JSON Web Token) for secure access.
 
 ### Features
-
-- **CRUD Operations for Users**:
-    - `GET /api/User`: Retrieve a list of all users.
-    - `GET /api/User/{id}`: Retrieve details of a specific user by ID.
-    - `POST /api/User`: Create a new user.
-    - `PUT /api/User/{id}`: Update an existing user's details.
-    - `DELETE /api/User/{id}`: Delete a user by ID.
-
-- **User Authentication**:
-    - `POST /api/User/login`: Authenticate a user and receive a JWT token.
+- **CRUD Operations for Workouts**:
+- **CRUD Operations for Exercises**:
+- **CRUD Operations for Exercise Equipment**:
+- **CRUD Operations for Workout Exercise**:
+- **User Authentication JWT token**:
 
 ### Future Features
 
-- **Workout Tracking**: Adding endpoints to track workouts, including exercise details, sets, reps, and more.
-- **Progress Tracking**: Features to track progress over time with various metrics.
 - **Integration with Third-Party Services**: Integration with other fitness apps or services for enhanced functionality.
+- **Frontend Client**: Building a frontend client using React/Next.js or similar technology for a user-friendly interface.
 
 ### Technologies Used
 
@@ -47,6 +41,6 @@ This API is designed to manage users and will eventually include features for tr
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
-
+   git clone https://github.com/QyperXit/WorkoutTracker-api
+   cd WorkoutTracker-api
+   ```

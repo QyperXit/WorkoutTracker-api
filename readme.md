@@ -10,6 +10,7 @@ This API is designed to manage users and will eventually include features for tr
 - **Authentication**: User login with JWT (JSON Web Token) for secure access.
 
 ### Features
+
 - **CRUD Operations for Workouts**:
 - **CRUD Operations for Exercises**:
 - **CRUD Operations for Exercise Equipment**:

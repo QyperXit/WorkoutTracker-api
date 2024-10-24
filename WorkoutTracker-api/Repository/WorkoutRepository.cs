@@ -16,6 +16,21 @@ public class WorkoutRepository : IWorkoutRepository
         _context = _context;
     }
 
+    // Get workouts for a specific user
+    public IEnumerable<WorkoutDto> GetWorkoutsByUserId(int userId)
+    {
+        if (_context == null)
+        {
+            throw new InvalidOperationException("DbContext is not initialized.");
+        }
+
+        return _context.Workouts
+            .Where(w => w.UserId == userId)  // Filter by user ID
+            .Include(w => w.WorkoutExercises)
+            .ThenInclude(we => we.Exercise)
+            .Select(w => WorkoutMapper.ToDto(w))
+            .ToList();
+    }
     public IEnumerable<WorkoutDto> GetWorkouts()
     {
         if (_context == null)
@@ -40,6 +55,12 @@ public class WorkoutRepository : IWorkoutRepository
 
     public Workout CreateWorkout(Workout workout)
     {
+        // Ensure the workout has a UserId set
+        if (workout.UserId <= 0)
+        {
+            throw new ArgumentException("UserId must be set when creating a workout");
+        }
+
         _context.Workouts.Add(workout);
         SaveChanges();
         return workout;

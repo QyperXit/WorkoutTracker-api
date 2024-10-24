@@ -16,6 +16,21 @@ public class WorkoutRepository : IWorkoutRepository
         _context = _context;
     }
 
+    // Get workouts for a specific user
+    public IEnumerable<WorkoutDto> GetWorkoutsByUserId(int userId)
+    {
+        if (_context == null)
+        {
+            throw new InvalidOperationException("DbContext is not initialized.");
+        }
+
+        return _context.Workouts
+            .Where(w => w.UserId == userId)  // Filter by user ID
+            .Include(w => w.WorkoutExercises)
+            .ThenInclude(we => we.Exercise)
+            .Select(w => WorkoutMapper.ToDto(w))
+            .ToList();
+    }
     public IEnumerable<WorkoutDto> GetWorkouts()
     {
         if (_context == null)
@@ -40,6 +55,12 @@ public class WorkoutRepository : IWorkoutRepository
 
     public Workout CreateWorkout(Workout workout)
     {
+        // Ensure the workout has a UserId set
+        if (workout.UserId <= 0)
+        {
+            throw new ArgumentException("UserId must be set when creating a workout");
+        }
+
         _context.Workouts.Add(workout);
         SaveChanges();
         return workout;
@@ -49,7 +70,7 @@ public class WorkoutRepository : IWorkoutRepository
     {
         var existingWorkout = _context.Workouts
             .Include(w => w.WorkoutExercises)
-            .FirstOrDefault(w => w.Id == workoutUpdateDto.Id);
+            .FirstOrDefault(w => w.Id == workoutUpdateDto.Id && w.UserId == workoutUpdateDto.UserId);
 
         if (existingWorkout == null)
         {
@@ -63,33 +84,33 @@ public class WorkoutRepository : IWorkoutRepository
         return SaveChanges();
     }
 
-    public bool DeleteWorkout(int id)
+    public bool DeleteWorkout(int id, int userId)
     {
         var workout = _context.Workouts
             .Include(w => w.WorkoutExercises)
-            .FirstOrDefault(w => w.Id == id);
+            .FirstOrDefault(w => w.Id == id && w.UserId == userId);
 
         if (workout == null)
         {
-            return false; // Workout not found
+            return false; // Workout not found or doesn't belong to user
         }
 
         _context.Workouts.Remove(workout);
-
-        // Optionally remove associated exercises if not using cascade delete
         _context.WorkoutExercises.RemoveRange(workout.WorkoutExercises);
 
-        return _context.SaveChanges() > 0;
+        return SaveChanges();
     }
-
-    // public bool DeleteWorkout(Workout workout)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    
 
     public bool WorkoutExists(int id)
     {
         return _context.Workouts.Any(w => w.Id == id);
+    }
+
+    public bool WorkoutExistsForUser(int id, int userId)
+    {
+        return _context.Workouts
+            .Any(w => w.Id == id && w.UserId == userId);
     }
 
     public bool SaveChanges()

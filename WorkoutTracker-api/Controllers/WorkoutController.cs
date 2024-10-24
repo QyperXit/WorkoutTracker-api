@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker_api.DBContext.Dto;
@@ -17,13 +18,17 @@ public class WorkoutController : ControllerBase
     {
         _workoutRepository = workoutRepository;
     }
-
-    // [Authorize]
+    
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WorkoutDto>))]
     public IActionResult GetWorkouts()
     {
-        var workouts = _workoutRepository.GetWorkouts();
+        // Get current user's ID from the token
+        var userId = GetUserIdFromToken();
+        
+        // Get only workouts belonging to the current user
+        var workouts = _workoutRepository.GetWorkoutsByUserId(userId);
+        
         if (workouts == null || !workouts.Any())
         {
             return NotFound();
@@ -31,11 +36,14 @@ public class WorkoutController : ControllerBase
         return Ok(workouts);
     }
     
+    
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult GetWorkoutById(int id)
     {
+        var userId = GetUserIdFromToken();
         var workout = _workoutRepository.GetWorkout(id);
 
         if (workout == null)
@@ -43,7 +51,12 @@ public class WorkoutController : ControllerBase
             return NotFound(); 
         }
 
-        // Map the workout to WorkoutDto and return it
+        // Check if the workout belongs to the current user
+        if (workout.UserId != userId)
+        {
+            return Forbid();
+        }
+
         var workoutDto = WorkoutMapper.ToDto(workout);
         return Ok(workoutDto); 
     }
@@ -58,17 +71,25 @@ public class WorkoutController : ControllerBase
             return BadRequest(ModelState);
         }
         
-        // map DTO to workout entity
-        var workout = WorkoutMapper.ToEntity(workoutCreateDto);
+        var userId = GetUserIdFromToken();
         
-        //call repository to create workout
+        // Map DTO to workout entity and set the current user's ID
+        var workout = WorkoutMapper.ToEntity(workoutCreateDto);
+        workout.UserId = userId; // Ensure the workout is associated with the current user
+        
         var createdWorkout = _workoutRepository.CreateWorkout(workout);
         
-        //if return 201 if successful with created workout
-        return CreatedAtAction(nameof(GetWorkoutById), new { id = createdWorkout.Id }, WorkoutMapper.ToDto(createdWorkout));
+        return CreatedAtAction(
+            nameof(GetWorkoutById), 
+            new { id = createdWorkout.Id }, 
+            WorkoutMapper.ToDto(createdWorkout)
+        );
     }
     
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult UpdateWorkout(int id, [FromBody] WorkoutUpdateDto workoutUpdateDto)
     {
         if (workoutUpdateDto == null || workoutUpdateDto.Id != id)
@@ -76,10 +97,22 @@ public class WorkoutController : ControllerBase
             return BadRequest("Invalid input or ID mismatch.");
         }
 
-        if (!_workoutRepository.WorkoutExists(id))
+        var userId = GetUserIdFromToken();
+        var existingWorkout = _workoutRepository.GetWorkout(id);
+
+        if (existingWorkout == null)
         {
             return NotFound($"Workout with ID {id} not found.");
         }
+
+        // Check if the workout belongs to the current user
+        if (existingWorkout.UserId != userId)
+        {
+            return Forbid();
+        }
+
+        // Ensure we keep the original UserId
+        workoutUpdateDto.UserId = userId;
 
         if (_workoutRepository.UpdateWorkout(workoutUpdateDto))
         {
@@ -90,14 +123,26 @@ public class WorkoutController : ControllerBase
     }
     
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult DeleteWorkout(int id)
     {
-        if (!_workoutRepository.WorkoutExists(id))
+        var userId = GetUserIdFromToken();
+        var workout = _workoutRepository.GetWorkout(id);
+
+        if (workout == null)
         {
             return NotFound($"Workout with ID {id} not found.");
         }
 
-        var success = _workoutRepository.DeleteWorkout(id);
+        // Check if the workout belongs to the current user
+        if (workout.UserId != userId)
+        {
+            return Forbid();
+        }
+
+        var success = _workoutRepository.DeleteWorkout(id, userId);
 
         if (success)
         {
@@ -106,6 +151,15 @@ public class WorkoutController : ControllerBase
 
         return StatusCode(500, "An error occurred while deleting the workout.");
     }
-
+    
+    private int GetUserIdFromToken()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            throw new UnauthorizedAccessException("User ID not found in token.");
+        }
+        return int.Parse(userId);
+    }
 
 }

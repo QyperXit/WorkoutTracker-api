@@ -87,6 +87,9 @@ public class WorkoutController : ControllerBase
     }
     
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult UpdateWorkout(int id, [FromBody] WorkoutUpdateDto workoutUpdateDto)
     {
         if (workoutUpdateDto == null || workoutUpdateDto.Id != id)
@@ -94,10 +97,22 @@ public class WorkoutController : ControllerBase
             return BadRequest("Invalid input or ID mismatch.");
         }
 
-        if (!_workoutRepository.WorkoutExists(id))
+        var userId = GetUserIdFromToken();
+        var existingWorkout = _workoutRepository.GetWorkout(id);
+
+        if (existingWorkout == null)
         {
             return NotFound($"Workout with ID {id} not found.");
         }
+
+        // Check if the workout belongs to the current user
+        if (existingWorkout.UserId != userId)
+        {
+            return Forbid();
+        }
+
+        // Ensure we keep the original UserId
+        workoutUpdateDto.UserId = userId;
 
         if (_workoutRepository.UpdateWorkout(workoutUpdateDto))
         {
@@ -108,14 +123,26 @@ public class WorkoutController : ControllerBase
     }
     
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult DeleteWorkout(int id)
     {
-        if (!_workoutRepository.WorkoutExists(id))
+        var userId = GetUserIdFromToken();
+        var workout = _workoutRepository.GetWorkout(id);
+
+        if (workout == null)
         {
             return NotFound($"Workout with ID {id} not found.");
         }
 
-        var success = _workoutRepository.DeleteWorkout(id);
+        // Check if the workout belongs to the current user
+        if (workout.UserId != userId)
+        {
+            return Forbid();
+        }
+
+        var success = _workoutRepository.DeleteWorkout(id, userId);
 
         if (success)
         {

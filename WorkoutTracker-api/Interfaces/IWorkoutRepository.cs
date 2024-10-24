@@ -13,7 +13,8 @@ public interface IWorkoutRepository
     
     bool UpdateWorkout(WorkoutUpdateDto workoutUpdateDto);  
 
-    bool DeleteWorkout(int id);
+    bool DeleteWorkout(int id, int userId);
     bool WorkoutExists(int id);
+    bool WorkoutExistsForUser(int id, int userId);
     bool SaveChanges();
 }

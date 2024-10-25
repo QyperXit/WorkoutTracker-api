@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker_api.DBContext.Dto;
@@ -35,10 +36,15 @@ public class UserController : ControllerBase
         return Ok(users);
     }
     
+    // [Authorize]
     // Get user by ID
     [HttpGet("{id}")]
     public ActionResult<UserDto> GetUserById(int id)
     {
+        int userId = GetUserIdFromToken();
+        Console.WriteLine($"User ID from token: {userId}");
+        Console.WriteLine($"User ID from DTO: {id}");
+
         var user = _userRepository.GetUserById(id);
         if (user == null)
         {
@@ -102,8 +108,10 @@ public class UserController : ControllerBase
         return NoContent();
     }
     
+    // [Authorize]
     [HttpDelete("{userId}")]
     public IActionResult DeleteUser(int userId)
+    
     {
         // Check if the user exists in the repository
         if (!_userRepository.UserExists(userId))
@@ -143,7 +151,21 @@ public class UserController : ControllerBase
 
 
 
+    private int GetUserIdFromToken()
+{
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     
+    // Debugging: Log the extracted user ID
+    Console.WriteLine($"User ID from token: {userId}");
+    
+    if (userId == null)
+    {
+        throw new UnauthorizedAccessException("User ID not found in token.");
+    }
+    
+    return int.Parse(userId);
+}
+
     
     
 }

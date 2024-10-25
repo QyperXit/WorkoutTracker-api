@@ -22,9 +22,8 @@ public class UserController : ControllerBase
         _tokenService = tokenService;
     }
     
-    // [Authorize]
+    // [Authorize(Roles = "Admin")]
     [HttpGet]
-    // [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
     public IActionResult GetUsers()
     {
@@ -36,14 +35,17 @@ public class UserController : ControllerBase
         return Ok(users);
     }
     
-    // [Authorize]
-    // Get user by ID
+    [Authorize]
     [HttpGet("{id}")]
     public ActionResult<UserDto> GetUserById(int id)
     {
-        int userId = GetUserIdFromToken();
-        Console.WriteLine($"User ID from token: {userId}");
-        Console.WriteLine($"User ID from DTO: {id}");
+        int currentUserId = GetUserIdFromToken();
+        
+        // Only allow users to access their own profile unless they're an admin
+        if (currentUserId != id && !User.IsInRole("Admin"))
+        {
+            return Forbid();
+        }
 
         var user = _userRepository.GetUserById(id);
         if (user == null)
@@ -55,10 +57,9 @@ public class UserController : ControllerBase
 
     
 // Create a new user
-    [HttpPost]
+    [HttpPost("register")]
     public ActionResult CreateUser(UserCreateDto userCreateDto)
     {
-        // Basic input validation
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -93,9 +94,18 @@ public class UserController : ControllerBase
     }
 
     
+    [Authorize]
     [HttpPut("{id}")]
     public IActionResult UpdateUser(int id, UserUpdateDto userUpdateDto)
     {
+        
+        int currentUserId = GetUserIdFromToken();
+
+        if (currentUserId != id && !User.IsInRole("Admin"))
+        {
+            return Forbid();
+        }
+        
         var user = _userRepository.GetUserById(id);
         if (user == null)
         {
@@ -108,29 +118,31 @@ public class UserController : ControllerBase
         return NoContent();
     }
     
-    // [Authorize]
+    [Authorize]
     [HttpDelete("{userId}")]
     public IActionResult DeleteUser(int userId)
-    
     {
-        // Check if the user exists in the repository
+        int currentUserId = GetUserIdFromToken();
+        
+        // Only allow users to delete their own profile unless they're an admin
+        if (currentUserId != userId && !User.IsInRole("Admin"))
+        {
+            return Forbid();
+        }
+
         if (!_userRepository.UserExists(userId))
         {
             return NotFound(new { message = "User not found" });
         }
         
+        bool userDeleted = _userRepository.DeleteUser(userId);
         
-        // Delete the user
-        bool UserDeleted = _userRepository.DeleteUser(userId);
-        
-
-        // Check if deletion was successful
-        if (!UserDeleted)
+        if (!userDeleted)
         {
             return StatusCode(500, new { message = "An error occurred while deleting the user." });
         }
 
-        return NoContent(); // Successfully deleted, return 204 No Content
+        return NoContent();
     }
     
     
@@ -144,7 +156,7 @@ public class UserController : ControllerBase
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
-        var token = _tokenService.GenerateToken(user.Id.ToString(), user.Name);  // Assuming _tokenService is injected
+        var token = _tokenService.GenerateToken(user.Id.ToString(), user.Name);  // _tokenService is injected
 
         return Ok(new { Token = token });
     }

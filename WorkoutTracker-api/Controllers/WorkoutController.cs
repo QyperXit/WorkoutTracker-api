@@ -37,28 +37,24 @@ public class WorkoutController : ControllerBase
     }
     
     
-    [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+   [HttpGet("{id}")]
+   [ProducesResponseType(StatusCodes.Status200OK)]
+   [ProducesResponseType(StatusCodes.Status404NotFound)]
+   [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult GetWorkoutById(int id)
     {
         var userId = GetUserIdFromToken();
+
+        // First check if the workout exists and belongs to the user
+        if (!_workoutRepository.WorkoutExistsForUser(id, userId))
+        {
+            // Return NotFound instead of Forbidden to avoid revealing the workout exists
+            return NotFound();
+        }
+
         var workout = _workoutRepository.GetWorkout(id);
-
-        if (workout == null)
-        {
-            return NotFound(); 
-        }
-
-        // Check if the workout belongs to the current user
-        if (workout.UserId != userId)
-        {
-            return Forbid();
-        }
-
         var workoutDto = WorkoutMapper.ToDto(workout);
-        return Ok(workoutDto); 
+        return Ok(workoutDto);
     }
 
     [HttpPost]
@@ -98,17 +94,11 @@ public class WorkoutController : ControllerBase
         }
 
         var userId = GetUserIdFromToken();
-        var existingWorkout = _workoutRepository.GetWorkout(id);
 
-        if (existingWorkout == null)
+        // Check if workout exists and belongs to user before attempting update
+        if (!_workoutRepository.WorkoutExistsForUser(id, userId))
         {
-            return NotFound($"Workout with ID {id} not found.");
-        }
-
-        // Check if the workout belongs to the current user
-        if (existingWorkout.UserId != userId)
-        {
-            return Forbid();
+            return NotFound("Workout not found or access denied.");
         }
 
         // Ensure we keep the original UserId
@@ -116,7 +106,7 @@ public class WorkoutController : ControllerBase
 
         if (_workoutRepository.UpdateWorkout(workoutUpdateDto))
         {
-            return NoContent(); 
+            return NoContent();
         }
 
         return StatusCode(500, "An error occurred while updating the workout.");
@@ -129,17 +119,11 @@ public class WorkoutController : ControllerBase
     public IActionResult DeleteWorkout(int id)
     {
         var userId = GetUserIdFromToken();
-        var workout = _workoutRepository.GetWorkout(id);
 
-        if (workout == null)
+        // Check if workout exists and belongs to user before attempting deletion
+        if (!_workoutRepository.WorkoutExistsForUser(id, userId))
         {
-            return NotFound($"Workout with ID {id} not found.");
-        }
-
-        // Check if the workout belongs to the current user
-        if (workout.UserId != userId)
-        {
-            return Forbid();
+            return NotFound("Workout not found or access denied.");
         }
 
         var success = _workoutRepository.DeleteWorkout(id, userId);

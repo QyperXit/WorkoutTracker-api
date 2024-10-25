@@ -8,6 +8,7 @@ using WorkoutTracker_api.Models;
 
 namespace WorkoutTracker_api.DBContext.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class WorkoutController : ControllerBase

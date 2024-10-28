@@ -133,6 +133,11 @@ public class WorkoutExerciseRepository : IWorkoutExerciseRepository
         return true;
     }
     
+    public async Task<bool> WorkoutBelongsToUserAsync(int workoutId, int userId)
+    {
+        return await _context.Workouts
+            .AnyAsync(w => w.Id == workoutId && w.UserId == userId);
+    }
 
 
     public async Task<bool> SaveChangesAsync()

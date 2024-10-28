@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkoutTracker_api.DBContext.Dto;
 using WorkoutTracker_api.Interfaces;
@@ -5,7 +7,7 @@ using WorkoutTracker_api.Mappers;
 
 namespace WorkoutTracker_api.Controllers;
 
-
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class WorkoutExerciseController : ControllerBase
@@ -20,11 +22,19 @@ public class WorkoutExerciseController : ControllerBase
     [HttpGet("workout/{workoutId}/exercise/{exerciseId}")]
     public async Task<ActionResult<WorkoutExerciseDto>> GetWorkoutExerciseAsync(int workoutId, int exerciseId)
     {
+        var userId = GetUserIdFromToken();
+        
+        // Verify workout belongs to user
+        if (!await _workoutExerciseRepository.WorkoutBelongsToUserAsync(workoutId, userId))
+        {
+            return NotFound(); // Using NotFound instead of Forbidden for security
+        }
+
         var workoutExercise = await _workoutExerciseRepository.GetWorkoutExerciseAsync(workoutId, exerciseId);
     
         if (workoutExercise == null)
         {
-            return NotFound(new { Message = $"Workout exercise with Workout ID {workoutId} and Exercise ID {exerciseId} not found." });
+            return NotFound();
         }
     
         return Ok(workoutExercise);
@@ -35,11 +45,19 @@ public class WorkoutExerciseController : ControllerBase
     [HttpGet("workout/{workoutId}")]
     public async Task<ActionResult<IEnumerable<WorkoutExerciseDto>>> GetAllWorkoutExercisesByWorkoutId(int workoutId)
     {
+        var userId = GetUserIdFromToken();
+        
+        // Verify workout belongs to user
+        if (!await _workoutExerciseRepository.WorkoutBelongsToUserAsync(workoutId, userId))
+        {
+            return NotFound();
+        }
+
         var workoutExercises = await _workoutExerciseRepository.GetAllWorkoutExercisesByWorkoutIdAsync(workoutId);
 
         if (workoutExercises == null || !workoutExercises.Any())
         {
-            return NotFound(new { Message = $"No workout exercises found for Workout ID {workoutId}." });
+            return NotFound();
         }
 
         return Ok(workoutExercises);
@@ -49,6 +67,14 @@ public class WorkoutExerciseController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<WorkoutExerciseDto>> AddWorkoutExerciseAsync(WorkoutExerciseDto workoutExerciseDto)
     {
+        var userId = GetUserIdFromToken();
+        
+        // Verify workout belongs to user
+        if (!await _workoutExerciseRepository.WorkoutBelongsToUserAsync(workoutExerciseDto.WorkoutId, userId))
+        {
+            return NotFound();
+        }
+
         await _workoutExerciseRepository.AddWorkoutExerciseAsync(workoutExerciseDto);
         return Ok(workoutExerciseDto);
     }
@@ -57,13 +83,19 @@ public class WorkoutExerciseController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateWorkoutExercise(int id, [FromBody] WorkoutExerciseDto workoutExerciseDto)
     {
-        // Validate the incoming DTO
-        if (id != workoutExerciseDto.Id) // You might want to validate against composite keys
+        var userId = GetUserIdFromToken();
+        
+        // Verify workout belongs to user
+        if (!await _workoutExerciseRepository.WorkoutBelongsToUserAsync(workoutExerciseDto.WorkoutId, userId))
+        {
+            return NotFound();
+        }
+
+        if (id != workoutExerciseDto.Id)
         {
             return BadRequest("ID mismatch.");
         }
 
-        // Call the repository method to update
         var result = await _workoutExerciseRepository.UpdateWorkoutExerciseAsync(workoutExerciseDto);
     
         if (!result)
@@ -77,6 +109,14 @@ public class WorkoutExerciseController : ControllerBase
     [HttpPatch("{workoutId}/{exerciseId}")]
     public async Task<IActionResult> PatchWorkoutExercise(int workoutId, int exerciseId, [FromBody] WorkoutExercisePatchDto patchDto)
     {
+        var userId = GetUserIdFromToken();
+        
+        // Verify workout belongs to user
+        if (!await _workoutExerciseRepository.WorkoutBelongsToUserAsync(workoutId, userId))
+        {
+            return NotFound();
+        }
+
         if (patchDto == null)
         {
             return BadRequest("Patch data is required.");
@@ -86,7 +126,7 @@ public class WorkoutExerciseController : ControllerBase
 
         if (!result)
         {
-            return NotFound($"WorkoutExercise with WorkoutId {workoutId} and ExerciseId {exerciseId} not found.");
+            return NotFound();
         }
 
         return NoContent();
@@ -95,16 +135,33 @@ public class WorkoutExerciseController : ControllerBase
     [HttpDelete("{workoutId}/{exerciseId}")]
     public async Task<IActionResult> DeleteWorkoutExercise(int workoutId, int exerciseId)
     {
+        var userId = GetUserIdFromToken();
+        
+        // Verify workout belongs to user
+        if (!await _workoutExerciseRepository.WorkoutBelongsToUserAsync(workoutId, userId))
+        {
+            return NotFound();
+        }
+
         var result = await _workoutExerciseRepository.DeleteWorkoutExerciseAsync(workoutId, exerciseId);
 
         if (!result)
         {
-            return NotFound($"WorkoutExercise with WorkoutId {workoutId} and ExerciseId {exerciseId} not found.");
+            return NotFound();
         }
 
         return NoContent();
     }
     
-
+    
+    private int GetUserIdFromToken()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId == null)
+        {
+            throw new UnauthorizedAccessException("User ID not found in token.");
+        }
+        return int.Parse(userId);
+    }
     
 }

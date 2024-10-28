@@ -5,6 +5,7 @@ namespace WorkoutTracker_api.Interfaces;
 
 public interface IWorkoutExerciseRepository
 {
+    Task<bool> WorkoutBelongsToUserAsync(int workoutId, int userId);
     Task<IEnumerable<WorkoutExerciseDto>> GetAllWorkoutExercisesByWorkoutIdAsync(int workoutId);
     Task<WorkoutExerciseDto> GetWorkoutExerciseAsync(int workoutId, int exerciseId);
     Task AddWorkoutExerciseAsync(WorkoutExerciseDto workoutExerciseDto);

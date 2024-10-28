@@ -5,3 +5,8 @@ obj/
 *.obj
 *.bin
 *.cache
+
+
+# JetBrains IDE files
+.idea/
+*.DotSettings.user

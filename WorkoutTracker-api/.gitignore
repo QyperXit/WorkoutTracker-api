@@ -9,4 +9,10 @@ obj/
 
 # JetBrains IDE files
 .idea/
+*.sln.iml
 *.DotSettings.user
+*.DotSettings
+datasource.xml
+indexLayout.xml
+settings.json
+vcs.xml

@@ -21,7 +21,7 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
         _tokenService = tokenService;
     }
-    
+    // ** admin roles **
     // [Authorize(Roles = "Admin")]
     [HttpGet]
     [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
